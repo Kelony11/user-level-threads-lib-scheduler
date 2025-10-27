@@ -20,7 +20,7 @@ This project implements a user-level (green) thread library in C on top of ucont
 
 - **Preemptive scheduling:** Timer-driven preemption via SIGPROF + ITIMER_PROF; safe signal-masking around critical paths.
 
-- Three schedulers (build-time switch):
+- **Three schedulers (build-time switch):**
 
 	1. **PSJF:** Picks the thread with the smallest accumulated runtime (run_time_us) each dispatch.
 
