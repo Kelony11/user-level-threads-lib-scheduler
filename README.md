@@ -4,18 +4,17 @@
 
 # PROJECT OVERVIEW
 This project implements a user-level (green) thread library in C on top of ucontext.h, with:
+1. Preemptive context switching via SIGPROF + ITIMER_PROF
+2. A full threading API (worker_create, worker_yield, worker_join, worker_exit)
+3. Non-recursive mutexes with FIFO wait queues.
+4. Three scheduler policies selectable at build time:
+	- PSJF (Preemptive Shortest Job First)
 
-	- Preemptive context switching via SIGPROF + ITIMER_PROF
-	- A full threading API (worker_create, worker_yield, worker_join, worker_exit)
-	- Non-recursive mutexes with FIFO wait queues.
-	- Three scheduler policies selectable at build time:
+	- MLFQ (Multi-Level Feedback Queue)
 
-		- PSJF (Preemptive Shortest Job First)
+	- CFS (Completely Fair Scheduler; min-heap by virtual runtime)
 
-		- MLFQ (Multi-Level Feedback Queue)
-
-		- CFS (Completely Fair Scheduler; min-heap by virtual runtime)
-	- Benchmarks and a small test to validate correctness & measure performance
+5. Benchmarks and a small test to validate correctness & measure performance
 
 # KEY FEATURES 🔑
 - User-level threading API: worker_create, worker_yield, worker_join, worker_exit with a clean TCB design.

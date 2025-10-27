@@ -1,16 +1,19 @@
 How to run the benchmark?
 -------------------------
 0. Build the library (from project root)
-	$ make clean && make SCHED=PSJF
+	``` $ make clean && make SCHED=PSJF ```
 
 1. Enter the benchmarks folder and build the apps
-	$ cd benchmarks
-	$ make clean && make 
+	``` 
+	$ cd benchmarks 
+	$ make clean && make  
+	```
 
 
 2. Before running the benchmark, run 
-
+	```
 	$ ./genRecord.sh
+	```
 
 The genRecord generates data for external_cal.
 
