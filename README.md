@@ -1,4 +1,5 @@
-# user-level-threads-library-and-scheduler
+# user-level-threads-library-and-scheduler 🧵
+
 **User-Level Thread Library with PSJF / MLFQ / CFS schedulers**
 
 # PROJECT OVERVIEW
