@@ -2,7 +2,7 @@
 
 **User-Level Thread Library with PSJF / MLFQ / CFS schedulers**
 
-# PROJECT OVERVIEW
+# PROJECT OVERVIEW 
 This project implements a user-level (green) thread library in C on top of ucontext.h, with:
 1. Preemptive context switching via SIGPROF + ITIMER_PROF
 2. A full threading API (worker_create, worker_yield, worker_join, worker_exit)
@@ -44,7 +44,7 @@ This project implements a user-level (green) thread library in C on top of ucont
 
 - **Concurrency primitives:** Custom user-level mutexes; optional pthread build for comparison.
 
-# Performance Notes
+# Performance Notes 📝
 - **external_cal (I/O-bound):** more user threads don’t necessarily help; overhead and I/O contention limit gains
 
 - **parallelCal (CPU-bound simple):** modest improvements with more threads, but no true multicore parallelism (all user threads run on one kernel thread)
