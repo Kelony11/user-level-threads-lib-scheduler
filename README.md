@@ -8,49 +8,48 @@ This project implements a user-level (green) thread library in C on top of ucont
 2. A full threading API (worker_create, worker_yield, worker_join, worker_exit)
 3. Non-recursive mutexes with FIFO wait queues.
 4. Three scheduler policies selectable at build time:
+
 	- PSJF (Preemptive Shortest Job First)
-
 	- MLFQ (Multi-Level Feedback Queue)
-
 	- CFS (Completely Fair Scheduler; min-heap by virtual runtime)
 
 5. Benchmarks and a small test to validate correctness & measure performance
 
 # KEY FEATURES 🔑
-- User-level threading API: worker_create, worker_yield, worker_join, worker_exit with a clean TCB design.
+- **User-level threading API:** worker_create, worker_yield, worker_join, worker_exit with a clean TCB design.
 
-- Preemptive scheduling: Timer-driven preemption via SIGPROF + ITIMER_PROF; safe signal-masking around critical paths.
+- **Preemptive scheduling:** Timer-driven preemption via SIGPROF + ITIMER_PROF; safe signal-masking around critical paths.
 
 - Three schedulers (build-time switch):
 
-	- PSJF: Picks the thread with the smallest accumulated runtime (run_time_us) each dispatch.
+	1. **PSJF:** Picks the thread with the smallest accumulated runtime (run_time_us) each dispatch.
 
-	- MLFQ: 4 priority levels with time slices {10, 20, 40, 80}ms, per-quantum accounting, and periodic priority boosts.
+	2. **MLFQ:** 4 priority levels with time slices {10, 20, 40, 80}ms, per-quantum accounting, and periodic priority boosts.
 
-	- CFS: Min-heap ordered by vruntime_us; dynamic time slice = TARGET_LATENCY / runnable clamped by MIN_SCHED_GRN.
+	3. **CFS:** Min-heap ordered by vruntime_us; dynamic time slice = TARGET_LATENCY / runnable clamped by MIN_SCHED_GRN.
 
-- Non-recursive mutexes: FIFO waiter queues, owner checks (EDEADLK, EPERM), main-thread compatibility.
+- **Non-recursive mutexes:** FIFO waiter queues, owner checks (EDEADLK, EPERM), main-thread compatibility.
 
-- Accurate timing + stats: First-run, completion, turnaround/response-time averages; total context switches.
+- **Accurate timing + stats:** First-run, completion, turnaround/response-time averages; total context switches.
 
-- Benchmarks included: external_cal (I/O-heavy), parallelCal and vector_multiply (CPU-bound) + a small test harness.
+- **Benchmarks included:** external_cal (I/O-heavy), parallelCal and vector_multiply (CPU-bound) + a small test harness.
 
 
 # TECHNICAL STACK 🧱
-- Language & ABI: C (C99+), POSIX.
+- **Language & ABI:** C (C99+), POSIX.
 
-- Contexts & signals: ucontext.h (getcontext/makecontext/swapcontext), sigaction, setitimer(ITIMER_PROF), SIGPROF.
+- **Contexts & signals:** ucontext.h (getcontext/makecontext/swapcontext), sigaction, setitimer(ITIMER_PROF), SIGPROF.
 
-- Data structures: FIFO queues (ready/mutex wait), 4-level MLFQ arrays, binary min-heap for CFS.
+- **Data structures:** FIFO queues (ready/mutex wait), 4-level MLFQ arrays, binary min-heap for CFS.
 
-- Concurrency primitives: Custom user-level mutexes; optional pthread build for comparison.
+- **Concurrency primitives:** Custom user-level mutexes; optional pthread build for comparison.
 
 # Performance Notes
-- external_cal (I/O-bound): more user threads don’t necessarily help; overhead and I/O contention limit gains
+- **external_cal (I/O-bound):** more user threads don’t necessarily help; overhead and I/O contention limit gains
 
-- parallelCal (CPU-bound simple): modest improvements with more threads, but no true multicore parallelism (all user threads run on one kernel thread)
+- **parallelCal (CPU-bound simple):** modest improvements with more threads, but no true multicore parallelism (all user threads run on one kernel thread)
 
-- vector_multiply (CPU-heavy): too many threads can over-switch; best times typically appear at a moderate thread count
+- **vector_multiply (CPU-heavy):** too many threads can over-switch; best times typically appear at a moderate thread count
 
 # Contributors 
 - Kelvin Ihezue, Bryan Shangguan
