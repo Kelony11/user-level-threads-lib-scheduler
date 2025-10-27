@@ -52,3 +52,12 @@ Sample output:
 The code will use "pthread" library by default.
 
 //#define USE_WORKERS 1
+
+Optional
+-----------------------
+To run the test program under the benchmarks
+
+``` 
+	$ make test 
+	$ ./test
+```
