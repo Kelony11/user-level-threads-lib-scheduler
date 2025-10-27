@@ -1,0 +1,57 @@
+# user-level-threads-library-and-scheduler
+**User-Level Thread Library with PSJF / MLFQ / CFS schedulers**
+
+# PROJECT OVERVIEW
+This project implements a user-level (green) thread library in C on top of ucontext.h, with:
+
+	- Preemptive context switching via SIGPROF + ITIMER_PROF
+	- A full threading API (worker_create, worker_yield, worker_join, worker_exit)
+	- Non-recursive mutexes with FIFO wait queues.
+	- Three scheduler policies selectable at build time:
+
+		- PSJF (Preemptive Shortest Job First)
+
+		- MLFQ (Multi-Level Feedback Queue)
+
+		- CFS (Completely Fair Scheduler; min-heap by virtual runtime)
+	- Benchmarks and a small test to validate correctness & measure performance
+
+# KEY FEATURES 🔑
+- User-level threading API: worker_create, worker_yield, worker_join, worker_exit with a clean TCB design.
+
+- Preemptive scheduling: Timer-driven preemption via SIGPROF + ITIMER_PROF; safe signal-masking around critical paths.
+
+- Three schedulers (build-time switch):
+
+	- PSJF: Picks the thread with the smallest accumulated runtime (run_time_us) each dispatch.
+
+	- MLFQ: 4 priority levels with time slices {10, 20, 40, 80}ms, per-quantum accounting, and periodic priority boosts.
+
+	- CFS: Min-heap ordered by vruntime_us; dynamic time slice = TARGET_LATENCY / runnable clamped by MIN_SCHED_GRN.
+
+- Non-recursive mutexes: FIFO waiter queues, owner checks (EDEADLK, EPERM), main-thread compatibility.
+
+- Accurate timing + stats: First-run, completion, turnaround/response-time averages; total context switches.
+
+- Benchmarks included: external_cal (I/O-heavy), parallelCal and vector_multiply (CPU-bound) + a small test harness.
+
+
+# TECHNICAL STACK 🧱
+- Language & ABI: C (C99+), POSIX.
+
+- Contexts & signals: ucontext.h (getcontext/makecontext/swapcontext), sigaction, setitimer(ITIMER_PROF), SIGPROF.
+
+- Data structures: FIFO queues (ready/mutex wait), 4-level MLFQ arrays, binary min-heap for CFS.
+
+- Concurrency primitives: Custom user-level mutexes; optional pthread build for comparison.
+
+# Performance Notes
+- external_cal (I/O-bound): more user threads don’t necessarily help; overhead and I/O contention limit gains
+
+- parallelCal (CPU-bound simple): modest improvements with more threads, but no true multicore parallelism (all user threads run on one kernel thread)
+
+- vector_multiply (CPU-heavy): too many threads can over-switch; best times typically appear at a moderate thread count
+
+# Contributors 
+- Kelvin Ihezue, Bryan Shangguan
+
